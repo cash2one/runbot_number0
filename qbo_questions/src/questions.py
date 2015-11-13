@@ -105,7 +105,7 @@ def read_dialogues(filename):
 
 def set_language(lang):
 
-    if lang!="es" and lang!="en":
+    if lang!="es" and lang!="en" and lang!="cn":
         lang="en"
 
     global subscribe
