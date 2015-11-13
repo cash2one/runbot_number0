@@ -1,5 +1,5 @@
-port1: /dev/ttyUSB0
-port2: /dev/ttyUSB1
+port1: /dev/ttyUSB2
+port2: /dev/ttyUSB0
 timeout1: 0.35
 timeout2: 0.35
 rate: 6.0
@@ -32,7 +32,7 @@ controllers: {
     "bat_con": {
         type: battery_controller,
         topic: /battery_state,
-        rate: 0.0066
+        rate: 0.66
     },
     "mic_con": {
         type: mics_controller,
@@ -51,13 +51,9 @@ controllers: {
         topic: /distance_sensors_state,
         sensors: {
           front: {
-            front_left_srf10: { type: srf10, address: 230, frame_id: front_left_addon },
-            front_right_srf10: { type: srf10, address: 226, frame_id: front_right_addon }
-          },
-          floor: {
-            floor_sensor: {type: GP2Y0A21YK, address: 8, frame_id: front_addon },
-          }
-        }
+               front_left_srf10: { type: srf10, address: 224, frame_id: front_left_addon }
+         } 
+       }
     }
 }
 

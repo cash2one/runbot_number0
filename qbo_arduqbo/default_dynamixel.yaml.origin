@@ -45,6 +45,16 @@ controllers: {
         type: imu_controller,
         rate: 15.0,
         topic: /imu_state
+    },
+    "sens_con": {
+        type: sensors_controller,
+        rate: 5.0,
+        topic: /distance_sensors_state,
+        sensors: {
+          floor: {
+            floor_sensor: {type: GP2Y0A21YK, address: 8, frame_id: front_addon },
+          }
+        }
     }
 }
 

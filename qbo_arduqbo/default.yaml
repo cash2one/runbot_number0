@@ -25,10 +25,6 @@ controllers: {
         type: nose_controller,
         topic: /cmd_nose
     },
-    "lcd_con": {
-        type: lcd_controller,
-        topic: /cmd_lcd
-    },
     "bat_con": {
         type: battery_controller,
         topic: /battery_state,
@@ -45,16 +41,6 @@ controllers: {
         rate: 15.0,
         topic: /imu_state
     },
-    "sens_con": {
-        type: sensors_controller,
-        rate: 5.0,
-        topic: /distance_sensors_state,
-        sensors: {
-          floor: {
-            floor_sensor: {type: GP2Y0A21YK, address: 8, frame_id: front_addon },
-          }
-        }
-    }
 }
 
 controlledservos: {

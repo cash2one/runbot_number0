@@ -1,10 +1,8 @@
 port1: /dev/ttyUSB2
 port2: /dev/ttyUSB0
 dmxPort: /dev/ttyUSB1
-baud1: 115200
-baud2: 115200
 timeout1: 0.35
-timeout2: 0.35 
+timeout2: 0.35
 rate: 6.0
 autostop: false
 controllers: {
@@ -16,7 +14,7 @@ controllers: {
     },
     "b_con": {
         type: base_controller,
-        rate: 15,
+        rate: 15.0,
         topic: /cmd_vel,
         odom_topic: /odom,
         tf_odom_broadcast: true
@@ -51,23 +49,25 @@ controllers: {
     },
     "irs_con": {
         type: irs_controller,
-        rate: 0.5,
+        rate: 5.0,
         topic: /irs_state
 },
     "sens_con": {
         type: sensors_controller,
-        rate: 1,
+        rate: 5.0,
         topic: /distance_sensors_state,
         sensors: {
           front: {
-            front_left_srf10: { type: srf10, address: 224, frame_id: front_left_addon, min_alert_distance: 20 },
-            front_right_srf10: { type: srf10, address: 226, frame_id: front_right_addon, min_alert_distance: 20}
-                 },
+            front_left_srf10: { type: srf10, address: 224, frame_id: front_left_addon, min_alert_distance: 0.1 },
+            front_right_srf10: { type: srf10, address: 226, frame_id: front_right_addon, min_alert_distance: 0.1 }
+          },
            back: {
-            back_left_srf10: { type: srf10, address: 228, frame_id: back_left_addon, min_alert_distance: 30 },
-            back_right_srf10: { type: srf10, address: 230, frame_id: back_right_addon, min_alert_distance: 30 }
-                }
-
+            back_left_srf10: { type: srf10, address: 228, frame_id: back_left_addon, min_alert_distance: 0.1 },
+            back_right_srf10: { type: srf10, address: 230, frame_id: back_right_addon, min_alert_distance: 0.1 }
+          },
+ floor: {
+            floor_sensor: {type: GP2Y0A21YK, address: 8, frame_id: front_addon, max_alert_distance: 28.0 },
+          }
         }
     }
 }
@@ -78,8 +78,8 @@ uncontrolledservos: {
 }
 
 dynamixelservo: {
-    head_pan_joint: {id: 4, invert: false, max_angle_degrees: 46.0, min_angle_degrees: -46.0, range: 300.0, ticks: 1024, neutral: 512},
-    head_tilt_joint: {id: 5, invert: false, max_angle_degrees: 10.0, min_angle_degrees: -37.8, range: 300.0, ticks: 1024, neutral: 512},
+    head_pan_joint: {id: 4, invert: false, max_angle_degrees: 66.0, min_angle_degrees: -66.0, range: 300.0, ticks: 1024, neutral: 512},
+    head_tilt_joint: {id: 5, invert: false, max_angle_degrees: 20.0, min_angle_degrees: -37.8, range: 300.0, ticks: 1024, neutral: 512},
 }
 
 joint_states_topic: /joint_states
