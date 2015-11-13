@@ -1,0 +1,12 @@
+<launch>
+    <node name="stereo_calibration" pkg="qbo_camera" type="usb_camera_calib_stereo" output="screen" >
+        <param name="board_width" value="8" />
+        <param name="board_height" value="6" />
+        <param name="boards_number" value="10" />
+        <param name="square_dimension" value="0.02712" />
+	<remap from ="/stereo/left/camera_info" to="/left/camera_info"/>
+	<remap from ="/stereo/left/image_raw" to="/left/image_raw"/>
+	<remap from ="/stereo/right/camera_info" to="/right/camera_info"/>
+	<remap from ="/stereo/right/image_raw" to="/right/image_raw"/>
+    </node>
+</launch>
