@@ -1,0 +1,12 @@
+{
+"soundCheck": "扬声器检查",
+"title_1_left_speaker": "检查",
+"title_2_left_speaker": "左扬声器",
+"title_1_right_speaker": "检查",
+"title_2_right_speaker": "右扬声器",
+"title_1_center_speaker": "检查",
+"title_2_center_speaker": "全部扬声器",
+"sound_fine": "听起来正常么？",
+"yes": "是的，正常",
+"no": "不正常！"
+}
