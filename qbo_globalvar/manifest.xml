@@ -1,0 +1,14 @@
+<package>
+  <description brief="qbo_globalvar">
+
+     qbo_globalvar
+
+  </description>
+  <author>runji</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/qbo_globalvar</url>
+
+</package>
+
+
