@@ -23,7 +23,7 @@
 
 // Defulat setting
 #define DEFAULT_BAUDNUM		1 // 1Mbps
-#define DEFAULT_ID		3
+#define DEFAULT_ID		8
 
 void PrintCommStatus(int CommStatus);
 void PrintErrorCode(void);
@@ -36,7 +36,7 @@ int main()
 	int GoalSpeed[2] = {20,20};
 	//int GoalPos[2] = {0, 4095}; // for Ex series
 	int index = 0;
-	int deviceIndex = 1;
+        char *deviceIndex = "/dev/ttyUSB1";
 	int Moving, PresentPos, PresentSpeed;
 	int CommStatus;
 
@@ -59,10 +59,23 @@ int main()
 			break;
 
 		// Write goal position
+	//        while(1)
 		dxl_write_word( DEFAULT_ID, P_GOAL_POSITION_L, GoalPos[index] );
+		CommStatus = dxl_get_result();
+                while(CommStatus != COMM_RXSUCCESS);      
+		printf( " 1 success!\n" );
 		dxl_write_word( DEFAULT_ID, P_GOAL_SPEED_L, GoalSpeed[index] );
+		CommStatus = dxl_get_result();
+                while(CommStatus != COMM_RXSUCCESS);      
+		printf( " 2 success!\n" );
 		dxl_write_byte( DEFAULT_ID, P_CW_COMPILANCE_SLOPE, 254 );
+		CommStatus = dxl_get_result();
+                while(CommStatus != COMM_RXSUCCESS);      
+		printf( " 3 success!\n" );
 		dxl_write_byte( DEFAULT_ID, P_CCW_COMPILANCE_SLOPE, 254 );
+		CommStatus = dxl_get_result();
+                while(CommStatus != COMM_RXSUCCESS);      
+		printf( " 4 success!\n" );
 		do
 		{
 			// Read present position
@@ -77,6 +90,7 @@ int main()
 			}
 			else
 			{
+				printf("sorry!!\n");
 				PrintCommStatus(CommStatus);
 				break;
 			}

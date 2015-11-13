@@ -7,7 +7,7 @@ extern "C" {
 
 
 ///////////// device control methods ////////////////////////
-int dxl_initialize(int deviceIndex, int baudnum );
+int dxl_initialize(char *deviceIndex, int baudnum );
 void dxl_terminate();
 
 

@@ -152,15 +152,15 @@ static inline long myclock()
 void dxl_hal_set_timeout( int NumRcvByte )
 {
 	glStartTime = myclock();
-	gfRcvWaitTime = (float)(gfByteTransTime*(float)NumRcvByte + 5.0f);
+	gfRcvWaitTime = (float)(gfByteTransTime*(float)NumRcvByte + 1500.0f);
 }
 
 int dxl_hal_timeout(void)
 {
 	long time;
-	
+	//printf("gfRcvWaitTime=%f\n", gfRcvWaitTime);
 	time = myclock() - glStartTime;
-	
+        	
 	if(time > gfRcvWaitTime)
 		return 1;
 	else if(time < 0)

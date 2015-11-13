@@ -98,13 +98,17 @@ void dxl_rx_packet(void)
 	unsigned char checksum = 0;
 
 	if( giBusUsing == 0 )
-		return;
+	{
+	    while(1);
+            return;
+        }
 
 	if( gbInstructionPacket[ID] == BROADCAST_ID )
 	{
 		gbCommStatus = COMM_RXSUCCESS;
 		giBusUsing = 0;
-		return;
+		while(1);
+                return;
 	}
 	
 	if( gbCommStatus == COMM_TXSUCCESS )
@@ -124,6 +128,7 @@ void dxl_rx_packet(void)
 			else
 				gbCommStatus = COMM_RXCORRUPT;
 			giBusUsing = 0;
+			printf("timeout or corrupt!!\n");
 			return;
 		}
 	}
@@ -193,10 +198,11 @@ void dxl_rx_packet(void)
 void dxl_txrx_packet(void)
 {
 	dxl_tx_packet();
-
-	if( gbCommStatus != COMM_TXSUCCESS )
+        //printf("tx success!!\n");
+ 	if( gbCommStatus != COMM_TXSUCCESS )
 		return;	
 	
+        //printf("before rx success!!\n");
 	do{
 		dxl_rx_packet();		
 	}while( gbCommStatus == COMM_RXWAITING );	

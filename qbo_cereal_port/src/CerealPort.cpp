@@ -49,13 +49,18 @@
 #include "cereal_port/CerealPort.h"
 
 //! Macro for throwing an exception with a message, passing args
-#define CEREAL_EXCEPT(except, msg, ...) \
+#define CEREAL_EXCEPT_ori(except, msg, ...) \
 { \
     char buf[1000]; \
     snprintf(buf, 1000, msg " (in cereal::CerealPort::%s)" , ##__VA_ARGS__, __FUNCTION__); \
     throw except(buf); \
 }
-
+#define CEREAL_EXCEPT(except, msg, ...) \
+{ \
+    char buf[1000]; \
+    snprintf(buf, 1000, msg " (in cereal::CerealPort::%s)" , ##__VA_ARGS__, __FUNCTION__); \
+    std::cout<<buf<<std::endl; \
+}
 cereal::CerealPort::CerealPort() : fd_(-1)
 {
 	stream_thread_ = NULL;
