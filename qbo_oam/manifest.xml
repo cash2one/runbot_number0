@@ -1,0 +1,17 @@
+<package>
+  <description brief="qbo_oam">
+
+     qbo_oam
+
+  </description>
+  <author>runji</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/qbo_oam</url>
+  <depend package="neo_talk"/>
+  <depend package="qbo_arduqbo"/>
+  <depend package="qbo_globalvar"/>
+
+</package>
+
+
