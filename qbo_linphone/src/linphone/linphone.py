@@ -30,7 +30,7 @@ class Linphone():
 
         self.termination_condition = termination_condition
 
-        configuration = open("/opt/ros/electric/stacks/qbo_stack/qbo_linphone/config/linphonerc.in").read()
+        configuration = open("/home/runji/ros_workspace/src/OpenQbo/qbo_linphone/config/linphonerc.in").read()
         configuration = configuration.replace('%AUDIO_DEV_ID%', audio_dev_id)
         config_file = open("/tmp/linphonerc", 'w')
         config_file.write(configuration)
