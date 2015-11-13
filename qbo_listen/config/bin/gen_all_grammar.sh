@@ -20,8 +20,8 @@
 # MA 02110-1301, USA.
 #
 # Authors: Sergio Merino <s.merino@openqbo.com>;
-
-dir="$ROS_PACKAGE_PATH/qbo_listen/"
+OpenQbo_dir="/home/runji/ros_workspace/src/OpenQbo"
+dir="$OpenQbo_dir/qbo_listen"
 #dir="$ROS_PACKAGE_PATH/qbo_stack/qbo_listen"
 acousticdir="/usr/share/qbo-julius-model/"
 tmpfile=/var/tmp/juliusdialog.tmp
@@ -40,14 +40,14 @@ finalconfigfile=$dir/config/julius.jconf
 function createConfFile {
 IFS=$'\n'
 > $tmpfile
-languages=`ls -l $lmdir | grep -vi total | awk -F" " '{print $8}'`
+languages=`ls -l $lmdir | grep -vi total | awk -F" " '{print $9}'`
 for line in $languages; do
         echo "-AM $line" >> $tmpfile
 #        echo "-ssload noiseSpec" >> $tmpfile
         echo "-h $Ramdir$line/hmmdefs" >> $tmpfile
         echo "-hlist $Ramdir$line/tiedlist" >> $tmpfile
 	echo "" >> $tmpfile
-	LMs=`ls -l $lmdir$line | grep -vi total | awk -F" " '{print $8}'`
+	LMs=`ls -l $lmdir$line | grep -vi total | awk -F" " '{print $9}'`
         for lm in $LMs; do
 		echo "-LM $line$lm" >> $tmpfile
 
@@ -74,9 +74,9 @@ cat $preconfigfile $tmpfile > $finalconfigfile
 function compileLMs {
 IFS=$'\n'
 
-languages=`ls -l $amdir | grep -vi total | awk -F" " '{print $8}'`
+languages=`ls -l $amdir | grep -vi total | awk -F" " '{print $9}'`
 for line in $languages; do
-	LMs=`ls -l $lmdir$line | grep -vi total | awk -F" " '{print $8}'`
+	LMs=`ls -l $lmdir$line | grep -vi total | awk -F" " '{print $9}'`
 	for lm in $LMs; do
 		echo "---------------------------------------------------------------------------------------------------------------"
 		echo "Next To Process:"
@@ -109,7 +109,7 @@ done
 }
 
 
-cd "$ROS_PACKAGE_PATH/qbo_listen/config/bin"
+cd "$OpenQbo_dir/qbo_listen/config/bin"
 if [ "$1" == "-f" ]; then
     compileLMs "force"
 else
