@@ -22,8 +22,6 @@
  */
 
 #include "face_detector.h"
-
-
 FaceDetector::FaceDetector() : it_(private_nh_)
 {
 	ROS_INFO("Initializing Qbo face tracking");
@@ -68,7 +66,7 @@ FaceDetector::~FaceDetector() {
 void FaceDetector::setROSParams()
 {
 	//Setting default path of the Haar cascade classifier
-	string default_classifier_path = "/usr/share/OpenCV-2.3.1/haarcascades/haarcascade_frontalface_alt2.xml";
+	string default_classifier_path = "/opt/ros/groovy/share/OpenCV/haarcascades/haarcascade_frontalface_alt2.xml";
         //string alternative_classifier_path = "/usr/share/OpenCV-2.3.1/haarcascades/haarcascade_profileface.xml";
         string alternative_classifier_path = "none";
 
@@ -229,10 +227,16 @@ void FaceDetector::infoCallback(const sensor_msgs::CameraInfo::ConstPtr& info)
 			for (int j=0;j<4;j++)
 			{
 				p.at<double>(i,j)=info->P[4*i+j];
+				ROS_ERROR("%lf", info->P[4*i+j]);//p.at<double>(i,j));
 			}
 		}
 		p(cv::Rect(0,0,3,3)).convertTo(p_,CV_32F);
-
+                ROS_ERROR("infoCallBack ......");
+                for(int ii=0; ii<3; ii++)
+                  for (int jj=0; jj<4; jj++)
+		    {
+                       ROS_ERROR("%f",p_.at<float>(ii,jj));
+		    }
 		/*
 		 * Subscribing to image node
 		 */
@@ -247,6 +251,8 @@ void FaceDetector::infoCallback(const sensor_msgs::CameraInfo::ConstPtr& info)
 void FaceDetector::imageCallback(const sensor_msgs::Image::ConstPtr& image_ptr)
 {
 
+
+    private_nh_.param("/qbo_face_tracking/send_to_recognizer", send_to_face_recognizer_, false);
 	/*
 	 * Cretate a CvImage pointer to get cv::Mat representation of image
 	 */
@@ -401,6 +407,7 @@ void FaceDetector::imageCallback(const sensor_msgs::Image::ConstPtr& image_ptr)
 	else
 	{
 		head_distance=calcDistanceToHead(detected_face_, kalman_filter_);
+    	//	ROS_ERROR("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxhead_distance:%f", head_distance);
 	}
 	
     if(head_distances_.size()==0)
@@ -415,15 +422,17 @@ void FaceDetector::imageCallback(const sensor_msgs::Image::ConstPtr& image_ptr)
     }
 
 
-    head_distance=0; //Reuse variable to compute mean head distance
+    head_distance=0.0; //Reuse variable to compute mean head distance
 
     //Use mean distance of last measured head distances
     for(unsigned int i=0;i<head_distances_.size();i++)
-    	head_distance+=head_distances_[i];
+    	{
+                //ROS_ERROR("xxxxxxxxxx0xxxxxhead_distance:%f, s_:%f\n", head_distance, head_distances_[i]);
+		head_distance+=head_distances_[i];
+}
 
     head_distance=head_distance/head_distances_.size();
-
-
+    //ROS_ERROR("xxxxxxxxxx2xxxxxhead_distance:%f", head_distance);
 
     //Update undetected count
 	if(!face_detected_bool_)
@@ -532,7 +541,8 @@ void FaceDetector::imageCallback(const sensor_msgs::Image::ConstPtr& image_ptr)
      */
     face_position_and_size_pub_.publish(message);
 
-
+    imshow("1111",image_received);
+    cv::waitKey(10);
     /*
      * Update Haar cascade use frequency for Dynamic Haar Cascade
      */
@@ -570,8 +580,7 @@ void FaceDetector::imageCallback(const sensor_msgs::Image::ConstPtr& image_ptr)
     if(face_detected_bool_)
     {
     	if(dynamic_check_haar_)
-    		ROS_INFO("FACE DETECTED -> Head Pos :(%d, %d), Head Distance: %lg, Dynamic check Haar: %u, Det type: %s, Alt: %s",
-    				(int)message.u, (int)message.v, head_distance, check_Haar_, detection_type.c_str(), (exist_alternative_)?"true":"false");
+    ROS_INFO("FACE DETECTED -> Head Pos :(%d, %d), Head Distance: %lg, Dynamic check Haar: %u, Det type: %s, Alt: %s", (int)message.u, (int)message.v, head_distance, check_Haar_, detection_type.c_str(), (exist_alternative_)?"true":"false");
     	else
     		ROS_INFO("FACE DETECTED -> Head Pos :(%d, %d), Head Distance: %lg, Check Haar: %u, Detection type: %s, Alt: %s",
     				(int)message.u, (int)message.v, head_distance, check_Haar_, detection_type.c_str(), (exist_alternative_)?"true":"false");
@@ -616,18 +625,20 @@ void FaceDetector::sendToRecognizer()
 	string str_detected = "";
 	bool bool_detected = false;
 
-	//Use the service
+	ROS_ERROR("XXXXXXXXXXXXXXXXXXXXsendToRecognizerXXXXXXXXXXXXXXXXXXXXXXXXXX");
 	if (client_recognize_.call(srv))
 	{
 		//ROS_INFO("Sum: %ld and %s", (long int)srv.response.sum, ((std::string)srv.response.name).c_str());
 
 		str_detected = (std::string)(srv.response.name);
 		bool_detected = srv.response.recognized;
-
+                
+	        printf("XX1XX,%d,%s\n",(int)bool_detected,str_detected.c_str());
 		if(bool_detected && str_detected == "")
 			name_detected_ = "UNKOWN";
 		else
 			name_detected_ = str_detected;
+	        printf("XX2XX,%d,%s\n",(int)bool_detected,str_detected.c_str());
 	}
 	else
 	{
@@ -825,9 +836,8 @@ unsigned int FaceDetector::detectFaceCamShift(cv::Mat img)
 
 double FaceDetector::euclidDist(cv::Point2f pt1, cv::Point2f pt2)
 {
-	return sqrt(pow(pt1.x-pt2.x, 2) + pow(pt1.y-pt2.y, 2));
+       return sqrt(pow(pt1.x-pt2.x, 2) + pow(pt1.y-pt2.y, 2));
 }
-
 
 void FaceDetector::setFaceClassifierPath(std::string face_classifier_path)
 {
@@ -852,7 +862,12 @@ unsigned int FaceDetector::detectFacesAltHaar(cv::Mat image, std::vector<cv::Rec
         classifierDetect(image,faces,alternative_face_classifier_);
         return faces.size();
 }
-
+void FaceDetector::PrintfMatrix(cv::Mat &mat)
+{
+    for(int i=0;i< mat.rows; i++)
+	for(int j=0; j< mat.cols; j++)
+	    ROS_ERROR("%f\t", mat.at<float>(i,j));
+}
 float FaceDetector::calcDistanceToHead(cv::Mat& head, cv::KalmanFilter& kalman_filter)
 {
 	float u_left=kalman_filter.statePost.at<float>(0,0)-head.cols/2;
@@ -869,12 +884,28 @@ float FaceDetector::calcDistanceToHead(cv::Mat& head, cv::KalmanFilter& kalman_f
 
 	cv::Mat cart_left=p_.inv()*uv_left;
 	cv::Mat cart_right=p_.inv()*uv_right;
+//	ROS_ERROR("!!!!!!!!!!!!!!!!!!!!!printf all the matrixs!!!!!!!!!!!\n");
+//        std::cout<< "*********printf all the matrixs************" <<endl;
+//	std::cout<< "uv_left"<<endl << uv_left <<endl<<endl;
+//        std::cout<< "uv_ritht"<<endl << uv_right <<endl<<endl;
+//        std::cout<< "p_.inv()"<<endl << p_.inv() <<endl<<endl;
+//        std::cout<< "cart_left"<<endl << cart_left <<endl<<endl;
+//        std::cout<< "cart_right"<<endl << cart_right <<endl<<endl;
+
+//        ROS_ERROR("p_ 3*4");  PrintfMatrix(p_);
+//        ROS_ERROR("uv_left 3*1");   PrintfMatrix(uv_left);
+//        ROS_ERROR("uv_right 3*1");  PrintfMatrix(uv_right);
+//        ROS_ERROR("cart_left 4*1"); PrintfMatrix(cart_left);
+//        ROS_ERROR("cart_right 4*1");PrintfMatrix(cart_right);
 
 
 	cart_left=cart_left/sqrt(cart_left.dot(cart_left));
 	cart_right=cart_right/sqrt(cart_right.dot(cart_right));
 
+	//ROS_ERROR("costheta:%f", cart_left.dot(cart_right));
 	float theta=acos(cart_left.dot(cart_right));
+
+	//ROS_ERROR("theta:%f", theta);
 	float l=(HEAD_SIZE/2)/tan(theta/2);
 	return l;
 }

@@ -154,7 +154,7 @@ private:
 	double euclidDist(cv::Point2f pt1, cv::Point2f pt2);
 	float calcDistanceToHead(cv::Mat& head, cv::KalmanFilter& kalman_filter);
 	void deleteROSParams();
-
+	void PrintfMatrix(cv::Mat &mat);
 #ifdef WITH_GPU
 	cv::gpu::CascadeClassifier_GPU face_classifier_gpu_;
 #endif

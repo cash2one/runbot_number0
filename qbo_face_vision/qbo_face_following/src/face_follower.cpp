@@ -215,21 +215,15 @@ void FaceFollower::facePositionCallback(const qbo_face_msgs::FacePosAndDistConst
 		tilt_vel=controlPID(v_act_,0,diff_v_,kp_v_,ki_v_,kd_v_);
 		v_prev_=v_act_;
 
-		ROS_INFO("Moving head: pos(%lg, %lg) and vel(%lg, %lg)", v_act_,u_act_,tilt_vel,pan_vel);
+		ROS_ERROR("Moving head: pos(%lg, %lg) and vel(%lg, %lg)", v_act_,u_act_,tilt_vel,pan_vel);
 
 		if(move_head_bool_)	
 			setHeadPositionToFace(v_act_,u_act_,tilt_vel,pan_vel);
 
 		if(!move_base_bool_)
 			return;
-
-		/*
-		 * BASE MOVEMENT
-		 */
-
-		/*
-		 * Velocities for base movement
-		 */
+		ROS_ERROR("Moving base............................");
+		
 		float linear_vel = 0;
 		float angular_vel = 0;
 
@@ -332,7 +326,7 @@ void FaceFollower::setHeadPositionToFace(float pos_updown, float pos_leftright, 
 
 	
 
-	ROS_INFO("Moving head to face: pos(%lg, %lg) and vel(%lg, %lg)", tilt_pos, pan_pos, vel_updown, vel_leftright);
+        ROS_ERROR("Moving head to face: pos(%lg, %lg) and vel(%lg, %lg)", tilt_pos, pan_pos, vel_updown, vel_leftright);
 	
 	sensor_msgs::JointState joint_state;
 	int servos_count=2;
@@ -343,9 +337,9 @@ void FaceFollower::setHeadPositionToFace(float pos_updown, float pos_leftright, 
 	joint_state.name[0]="head_pan_joint";	//izquierda-derecha
 
 	if(pos_leftright>0)
-		joint_state.position[0]=-1.7;
+		joint_state.position[0]=-0.5;
 	else
-		joint_state.position[0]=1.7;
+		joint_state.position[0]=0.5;
 
 //	joint_state.position[0]= pan_pos;
 	joint_state.velocity[0]=vel_leftright;
@@ -353,9 +347,9 @@ void FaceFollower::setHeadPositionToFace(float pos_updown, float pos_leftright, 
 	joint_state.name[1]="head_tilt_joint";	//arriba-abajo
 
 	if(pos_updown>0)
-		joint_state.position[1]=1.5;
+		joint_state.position[1]=0.3;
 	else
-		joint_state.position[1]=-1.5;
+		joint_state.position[1]=-0.2;
 
 
 //	joint_state.position[1]=tilt_pos;
@@ -372,9 +366,9 @@ void FaceFollower::setHeadPositionToFace(float pos_updown, float pos_leftright, 
 void FaceFollower::setHeadPositionGlobal(float pos_updown, float pos_leftright, float vel_updown, float vel_leftright)
 {
     if(pos_leftright<0)
-        pos_leftright=-1.5;
+        pos_leftright=-0.5;
     else if(pos_leftright>0)
-        pos_leftright=1.5;
+        pos_leftright=0.5;
 /*
     if(pos_updown<0)
         pos_updown=-1.5;

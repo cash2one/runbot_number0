@@ -22,7 +22,7 @@
  */
 
 #include "face_recognizer.h"
-
+#include <opencv2/nonfree/features2d.hpp>
 FaceRecognizer::FaceRecognizer() {
 	
 	ROS_INFO("Initializing Qbo face recognition");
@@ -275,7 +275,7 @@ int FaceRecognizer::loadPersonsNames()
 
 			person.images_dir_path_ = faces_db_path_+"/"+person_name;
 			persons_.push_back(person);
-			ROS_INFO("\tName collected: %s", person_name.c_str());
+			printf("\tName collected: %s\n", person_name.c_str());
 		}
 	}
 
@@ -517,7 +517,7 @@ int FaceRecognizer::loadAllPersonsImages()
 	for(unsigned int i = 0 ; i<persons_.size();i++)
 	{
 		int num_images_temp = loadOnePersonImages(persons_[i]);
-		ROS_INFO("\tImages loaded from %s: %d", persons_[i].name_.c_str(),num_images_temp);
+		printf("\tImages loaded from %s: %d\n", persons_[i].name_.c_str(),num_images_temp);
 		num_images+=num_images_temp;
 	}
 
@@ -1052,7 +1052,7 @@ bool FaceRecognizer::learnFaces(qbo_face_msgs::LearnFaces::Request  &req, qbo_fa
 		return true;
 	}
 
-	ROS_INFO("Trying to learn faces of person %s", person_name.c_str());
+	printf("Trying to learn faces of person %s", person_name.c_str());
 
 	/*
 	 * Clear vector of received faces
@@ -1148,7 +1148,7 @@ bool FaceRecognizer::learnFaces(qbo_face_msgs::LearnFaces::Request  &req, qbo_fa
 	
 	
 
-	ROS_INFO("Learn service successfully completed: %u faces has been stored for person %s", (unsigned int)received_faces_.size(), person_name.c_str());
+	printf("Learn service successfully completed: %u faces has been stored for person %s", (unsigned int)received_faces_.size(), person_name.c_str());
 	
 	res.learned = true;
 
@@ -1546,7 +1546,7 @@ int FaceRecognizer::trainBOW_SVMClassifiers()
         setSVMTrainAutoParams( c_grid, gamma_grid,  p_grid, nu_grid, coef_grid, degree_grid );
 
 
-        ROS_INFO("\t Training BOW classifier for %s...",persons_[i].name_.c_str());
+        printf("\t Training BOW classifier for %s...",persons_[i].name_.c_str());
 
         persons_[i].bow_svm_->train_auto(train_data, responses, cv::Mat(), cv::Mat(), svmParams, 10,
         		c_grid, gamma_grid, p_grid, nu_grid, coef_grid, degree_grid );
@@ -1556,7 +1556,7 @@ int FaceRecognizer::trainBOW_SVMClassifiers()
         //Saving svm to a file
         persons_[i].bow_svm_->save(svm_file.c_str());
 
-        ROS_INFO("\t BOW classifier for %s trained and stored",persons_[i].name_.c_str());
+        printf("\t BOW classifier for %s trained and stored",persons_[i].name_.c_str());
 
 	}
 	return 0;
@@ -1699,7 +1699,7 @@ int FaceRecognizer::trainBOW_Recognizer(string update_path)
 		//If person doesn't exist, we need to append it to the list of persons
 		if(!person_exists )
 		{
-			ROS_INFO("\nAdding new person to data base: %s\n", temp_persons[i].name_.c_str());
+			 printf("\nAdding new person to data base: %s\n", temp_persons[i].name_.c_str());
 
 			//Create folder of the person in data base path
 			boost::filesystem::create_directory(faces_db_path_+"/"+temp_persons[i].name_);
@@ -1738,9 +1738,9 @@ int FaceRecognizer::trainBOW_Recognizer(string update_path)
 			//Add new person to the person list
 			persons_.push_back(person_to_append);
 
-			ROS_INFO("Number of images of new person %s: %u", persons_[persons_.size()-1].name_.c_str(), (unsigned int)persons_[persons_.size()-1].images_.size());
-			ROS_INFO("Number of descriptors extracted for new person %s: %d", persons_[persons_.size()-1].name_.c_str(), persons_[persons_.size()-1].descriptors_.rows);
-			ROS_INFO("Person %s added\n", person_to_append.name_.c_str());
+			printf("Number of images of new person %s: %u", persons_[persons_.size()-1].name_.c_str(), (unsigned int)persons_[persons_.size()-1].images_.size());
+			printf("Number of descriptors extracted for new person %s: %d", persons_[persons_.size()-1].name_.c_str(), persons_[persons_.size()-1].descriptors_.rows);
+			printf("Person %s added\n", person_to_append.name_.c_str());
 		}
 	}
 
@@ -1930,7 +1930,7 @@ string FaceRecognizer::recognizeBOW_SVM(cv::Mat img)
 			max_index = i;
 		}
 
-		printf("%s: %2.5f,  \t", persons_[i].name_.c_str(), confidences[i]);
+		printf("%s:%2.5f,  \t", persons_[i].name_.c_str(), confidences[i]);
 	}
 
 	cout<<endl;
