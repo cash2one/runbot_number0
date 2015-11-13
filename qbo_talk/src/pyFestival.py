@@ -205,7 +205,7 @@ def test_server_client():
     festCli.open()
     #time.sleep(0.5)
     #festCli.setVoice("el_diphone")
-    festCli.say("Helo")
+    festCli.say("Hello,I am ready!")
     #festCli.setDuration(1)
     print "waiting 5"
     time.sleep(5)

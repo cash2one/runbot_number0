@@ -72,14 +72,14 @@ class festival_node(object):
     def __init__(self):
         #self.languages_voices={'en':'cmu_us_awb_arctic_clunits','es':'JuntaDeAndalucia_es_sf_diphone'}
         self.languages_voices={'en':'cmu_us_slt_arctic_clunits','es':'JuntaDeAndalucia_es_sf_diphone'}
-        self.greetings={'en':'Hello','es':'Hola'}
+        self.greetings={'en':'Hello,I am ready!','es':'Hola'}
         rospy.init_node('festival_server')
         self.festivalServer = pyFestival.FestivalServer()
         time.sleep(5)
         self.festivalClient = pyFestival.FestivalClient()
         self.festivalClient.open()
         #Set default language
-#        self.set_language("en")
+        self.set_language("en")
 
         command_service = rospy.Service('/qbo_talk/festival_command', Text2Speach, self.processCommand)
         talk_service = rospy.Service('/qbo_talk/festival_say', Text2Speach, self.say)
@@ -89,9 +89,9 @@ class festival_node(object):
         set_language_service = rospy.Service('/qbo_talk/set_language', Text2Speach, self.setLanguage)
         
         #Read current system language
-        lang = rospy.get_param("/system_lang", "en")
-        rospy.loginfo("Qbo talk: language detected-> "+lang)
-        self.set_language(lang)
+        #lang = rospy.get_param("/system_lang", "en")
+        #rospy.loginfo("Qbo talk: language detected-> "+lang)
+        #self.set_language(lang)
 
         # Add language subscriber
         rospy.Subscriber("/system_lang", String, self.system_language)
