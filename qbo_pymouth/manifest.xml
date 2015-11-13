@@ -1,0 +1,13 @@
+<package>
+  <description brief="qbo_pymouth">
+     qbo_pymouth
+  </description>
+  <author>Miguel Angel Julian</author>
+  <license>GPLv2</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://openqbo.org/wiki/doku.php?id=qbo_apps:ros_pack:qbo_pymouth</url>
+  <depend package="rospy"/>
+  <depend package="qbo_arduqbo"/>
+</package>
+
+
