@@ -21,6 +21,17 @@ rosbuild_genmsg()
 #uncomment if you have defined services
 rosbuild_gensrv()
 
+find_package(catkin REQUIRED COMPONENTS
+roscpp
+rospy
+std_msgs
+message_generation
+)
+
+add_service_files(
+FILES
+BatteryQuery.srv
+)
 #common commands for building c++ executables and libraries
 rosbuild_add_library(libdxl src/dynamixel_sdk/src/dxl_hal.c)
 rosbuild_add_library(dynamixel src/dynamixel_sdk/src/dynamixel.c)
