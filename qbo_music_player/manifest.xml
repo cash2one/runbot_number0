@@ -15,7 +15,7 @@
   <depend package="sensor_msgs"/>
   <depend package="std_msgs"/>
   <depend package="qbo_talk"/>
-
+  <depend package="roslib"/>
 </package>
 
 

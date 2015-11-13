@@ -48,8 +48,8 @@ std::string deleter="rm";
 int status = 0;
 int isColor = 1;
 int fps     = 30; 
-int frameW  = 480; 
-int frameH  = 320;
+int frameW  = 320; 
+int frameH  = 240;
 
 ros::Subscriber sub;
 cv::VideoWriter *writer;
@@ -63,6 +63,8 @@ using namespace boost;
 void recordCallback(const sensor_msgs::Image::ConstPtr& image_ptr)
 {
     cv_bridge::CvImagePtr cv_ptr;
+
+    ROS_INFO("Entered into the recordCallback!!");
     try
     {
         cv_ptr = cv_bridge::toCvCopy(image_ptr, sensor_msgs::image_encodings::BGR8);
@@ -112,6 +114,8 @@ bool startServiceCallBack(qbo_video_record::StartRecord::Request  &req,
     }
     else
     {
+
+      ROS_INFO("Begin to record camera!!");
       //Define Video file
       writer=new cv::VideoWriter(file, CV_FOURCC('D','I','V','X'), fps, cv::Size(frameW,frameH), true);
       //Defining imaging callback
@@ -144,11 +148,13 @@ void combineAudioVideo()
       ROS_INFO("End Combining");
       pclose(combProc);
       //Removing audio and video files
+/* 
       FILE* removeProc = popen(removeCommand, "r");
       while (fgets(buffer, 1028, removeProc) != NULL)
       {
       }
       pclose(removeProc);
+*/
       rename(tempFile.c_str(), finalFilename.c_str());
 }
 
