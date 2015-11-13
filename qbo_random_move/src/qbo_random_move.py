@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#
+#-*- coding:utf8 -*-
 # Software License Agreement (GPLv2 License)
 #
 # Copyright (c) 2011 Thecorpora, Inc.
@@ -29,7 +29,8 @@ import threading
 
 from lib_qbo_pyarduqbo import qbo_control_client
 #from lib_qbo_talk_py import qbo_talk_client
-from qbo_talk.srv import Text2Speach
+from neo_talk.srv import *
+#Text2Speach
 from qbo_face_msgs.msg import FacePosAndDist
 
 from time import sleep
@@ -49,8 +50,8 @@ def say(text):
     global talking_flag
     if not talking_flag:
         talking_flag=True
-        festivalCommand = rospy.ServiceProxy('/qbo_talk/festival_say', Text2Speach)
-        resp1 = festivalCommand(text)
+        speakCommand = rospy.ServiceProxy('/say', Text2Speach)
+        resp1 = speakCommand(text)
         #self.qbo_talk_controller.say('sentence':text)
         #print 'termino de hablar'
         talking_flag=False
@@ -82,7 +83,8 @@ class qbo_random_move():
         self.bad_word_said=False
         self.uniform_lineal_speed_change=0.05
         #self.talking=False
-        self.sentences=['Ups','A can not pass though a wall','I will brake this wall. Can anyone put a cannon on me?','Atom, can you help me with this wall?', 'Oh my God. I am gonna crash', 'I shall not pass']
+        #self.sentences=['Ups','A can not pass though a wall','I will brake this wall. Can anyone put a cannon on me?','Atom, can you help me with this wall?', 'Oh my God. I am gonna crash', 'I shall not pass']
+        self.sentences=["向上", "我不能爬过这面墙", "我将制动这堵墙. 谁能够给我一个炮?", "阿童木,你能帮我克服这堵墙吗?", "天啊，我快摔倒了", "我无法通过"]
         rospy.Subscriber("/qbo_face_tracking/face_pos_and_size", FacePosAndDist, face_callback)
 
 
@@ -160,8 +162,10 @@ class qbo_random_move():
                 if not bad_word_said:# and not talking_flag:
                     #talking_flag=True
                     #print 'intento hablar'
-                    t = threading.Thread(target=say, args=(choice(self.sentences), )) #[randint(0,len(self.sentences)-1)], ))
-                    t.start()
+		    print "!!!!!!!!!!!!!random say!!!!!!!!!!!!!!!!!!!!"
+                    #t = threading.Thread(target=say, args=(choice(self.sentences), )) #[randint(0,len(self.sentences)-1)], ))
+                    #t.start()
+                    say(choice(self.sentences))
                     bad_word_said=True
                 self.turn_time=0.15+uniform(-0.1,0.1)
             else:
