@@ -342,7 +342,7 @@ function sendAndCheck(numTest){
                         if( arrayError.indexOf(arrayWords[j].toUpperCase()) != -1  ){
                             line=line+"<span style='color:red;'>"+arrayWords[j]+"</span> ";
                         }else{
-                            line=line+"<span style='color:black;'>"+arrayWords[j]+"</span> ";
+                           line=line+"<span style='color:black;'>"+arrayWords[j]+"</span> ";
                         }
                     }
                     jQuery("iframe").contents().find("body").append(line+"</br>");

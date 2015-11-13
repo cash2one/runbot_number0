@@ -49,8 +49,9 @@ class RecorderManager(TabClass):
     def get_videos(self):
         videoFiles=[]
         for fname in glob.glob(self.videosDir+"*.ogv"):
+            print fname
             splitdir=fname.split("/")
-            videoFiles.append(splitdir[10])
+            videoFiles.append(splitdir[12])
         videoFiles.sort()
         return videoFiles
 

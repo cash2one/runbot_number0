@@ -56,8 +56,8 @@ class VoiceRecognitionManager(TabClass):
     def __init__(self,language):
        
 
-        self.ipWavServer = "audio.openqbo.org"
-        self.portWavServer="8588"
+        self.ipWavServer = "192.168.5.80"#"audio.openqbo.org"
+        self.portWavServer= "80" #"8588"
         self.language = language
         self.juliusPath=roslib.packages.get_pkg_dir("qbo_listen")
         self.juliusAMPath="/usr/share/qbo-julius-model/"
@@ -138,14 +138,15 @@ class VoiceRecognitionManager(TabClass):
             wordsList=""
             for word in words:
                 wordsList=wordsList+word+"::"
-            wordsList=wordsList[:-2]
+            	print word;
+		wordsList=wordsList[:-2]
             return wordsList
 
     @cherrypy.expose
     def test2(self,lang,text):
         errorlist=""
         text=text.encode("utf-8")
-        print text
+	print text
         wordlist=text.split()
         print wordlist
         for word in wordlist:
@@ -165,16 +166,18 @@ class VoiceRecognitionManager(TabClass):
     
     @cherrypy.expose
     def saveToFile(self,lang,text,model):
-        try:
-            #print self.juliusPath+self.LMPaths+language+"/"+model+self.LMFileName
-            text=text.encode("utf-8")
-            f = open(self.juliusPath+self.LMPaths+lang+"/"+model+self.LMFileName,'w')
-            f.write(text)
-            f.close()
-            gen_grammar.compilegrammar(model,lang)
-            subprocess.Popen("roslaunch qbo_listen voice_recognizer.launch".split())
-        except:
-            return "ERROR: Cant write the file"
+	#try:
+	print self.juliusPath+self.LMPaths+lang+"/"+model+self.LMFileName
+	text=text.encode("utf-8")
+	f= open(self.juliusPath+self.LMPaths+lang+"/"+model+self.LMFileName,'w')
+	text11= " will save to file!!!\n"
+	print text11
+	f.write(text)
+	f.close()
+	gen_grammar.compilegrammar(model,lang)
+	#subprocess.Popen("roslaunch qbo_listen voice_recognizer.launch".split())
+	#except:
+#		return "ERROR: Cant write the file"
         return ""
 
     @cherrypy.expose
@@ -291,12 +294,12 @@ class VoiceRecognitionManager(TabClass):
 
     @cherrypy.expose
     def save(self,transcripcion):
-        print "SAVE! transcripcion="+transcripcion
+	print "SAVE! transcripcion="+transcripcion
 
 
-        cmd="python "+self.path+"sendTranscription2Server.py "+str(self.mac)+" \""+transcripcion+"\" "+self.lan+" "+self.ipWavServer+" "+self.portWavServer
-        print cmd
-        out = runCmd(cmd)
+	cmd="python "+self.path+"sendTranscription2Server.py "+str(self.mac)+" \""+transcripcion+"\" "+self.lan+" "+self.ipWavServer+" "+self.portWavServer
+	print cmd
+	out = runCmd(cmd)
         
 
         if out[1] != "":

@@ -134,7 +134,7 @@ function startEverything(){
 
 	//Buttons detection
 	jQuery("#forward").mousedown(function(){
-        line=0.2;
+        line=0.5;
         ang = 0.0;
         base_move_timer=setInterval("move_timer("+line+","+ang+")", 100);
 	}).mouseup(function(){
@@ -148,7 +148,7 @@ function startEverything(){
 
 	//Buttons detection
 	jQuery("#back").mousedown(function(){
-        line=-0.2;
+        line=-0.5;
         ang = 0.0;
         base_move_timer=setInterval("move_timer("+line+","+ang+")", 100);
 	}).mouseup(function(){

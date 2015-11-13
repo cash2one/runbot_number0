@@ -94,7 +94,7 @@ class Root(object):
                 self.lang = "en"
 
         #Post the system lang to ROS and set the Param
-        if self.lang == "en" or self.lang == "es" :
+        if self.lang == "en" or self.lang == "es" or self.lang == "cn" :
             rospy.set_param("/system_lang", self.lang)
             lang_pub = rospy.Publisher('/system_lang', String)
             lang_pub.publish(String(self.lang))
@@ -109,7 +109,7 @@ class Root(object):
 
     def readLanFile(self):
         config=ConfigParser.ConfigParser()
-        config.readfp(open("lang/en.txt"))
+        config.readfp(open("lang/cn.txt"))
         allsections=config.sections()
         for i in allsections:
             if req.command==config.get(i,"input"):

@@ -85,12 +85,15 @@ class XMMS2Manager(TabClass):
         self.htmlTemplate = Template(filename='xmms2/templates/xmms2Template.html')
         self.jsTemplate = Template(filename='xmms2/templates/xmms2Template.js')
         self.c = sync.XMMSSync("Web")
+        time.sleep(1)
         self.c.connect(os.getenv("XMMS_PATH"))
 
 
     def getSortSongs(self,playlist,values=info_values):
         order=self.c.playlist_list_entries(playlist)
         playlistsongs=self.getSongs(playlist,values)
+        print playlistsongs
+        print "getSortSongs...."
         for song in playlistsongs:
            pos=order.index(song['id'])
            order.pop(pos)
@@ -112,6 +115,7 @@ class XMMS2Manager(TabClass):
         self.c.playlist_move( int(oldpos), int(newpos))
 
     def play(self):
+        print "begin to play song ..."
         self.c.playback_start()
         return self.getSelectedSong()
 
@@ -137,6 +141,7 @@ class XMMS2Manager(TabClass):
             self.pause()
             time.sleep(0.01)
             self.c.playback_volume_set("Master",int(volume))
+            print "set volume....."
             self.stop()
 #        print "Set volume"+str(time.time() - t0)+"seconds"
 
@@ -171,6 +176,7 @@ class XMMS2Manager(TabClass):
             self.play()
             self.pause()
             time.sleep(0.01)
+            print "get volume....."
             volume=self.c.playback_volume_get()
             self.stop()
         return str(volume['master'])
@@ -280,8 +286,7 @@ class XMMS2Manager(TabClass):
         # the NamedTemporaryFile, used by our version of cgi.FieldStorage,
         # explicitly deletes the original filename
         theFile = formFields['theFile']
-
-
+        #print theFile
 
         #detect whether the input is only one file or more
         list = False
@@ -309,11 +314,14 @@ class XMMS2Manager(TabClass):
 #        self.c.medialib_add_entry(self.songsPath+theFile.filename)
 #        print self.c.medialib_get_id(self.songsPath+theFile.filename)
         print type(theFile)
-        if type(theFile) is ListType:
+        print ListType
+	if type(theFile) is ListType:
             for songFile in theFile:
                 self.c.medialib_add_entry("file://"+self.songsPath+songFile.filename)
                 self.c.playlist_add_id(self.c.medialib_get_id("file://"+self.songsPath+songFile.filename))
         else:
+            print self.songsPath
+            print theFile.filename
             self.c.medialib_add_entry("file://"+self.songsPath+theFile.filename)
             self.c.playlist_add_id(self.c.medialib_get_id("file://"+self.songsPath+theFile.filename)) 
         

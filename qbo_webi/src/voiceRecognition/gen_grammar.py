@@ -28,7 +28,7 @@ import re
 import random
 
 #This function create the voca file
-LMdirectory="/opt/ros/electric/stacks/qbo_stack/qbo_listen/config/LM/"
+LMdirectory="/home/runji/ros_workspace/src/OpenQbo/qbo_listen/config/LM/"
 AMdirectory="/usr/share/qbo-julius-model/"
 def getRandomwords(wFile,num):
     f=open(wFile,"r")

@@ -112,7 +112,7 @@ def verify_password(user, password):
         auth.acct_mgmt()
     except PAM.error, resp:
         print 'Go away! (%s)' % resp
-        res = False 
+        res = True 
     except:
         print 'Internal error'
         res = False

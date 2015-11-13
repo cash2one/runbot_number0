@@ -38,13 +38,13 @@ from mako.lookup import TemplateLookup
 class Qbo_questionsManager(TabClass):
     def __init__(self,language):
         self.dialogue = {}
-        self.dialogue_path = roslib.packages.get_pkg_dir("qbo_questions")
+        self.dialogue_path = roslib.packages.get_pkg_dir("neo_questions")
         self.language = language
 
         self.templatelookup = TemplateLookup(directories=['./'])
         self.htmlTemplate = Template(filename='qbo_questions/templates/qbo_questions.html',lookup=self.templatelookup)
         self.jsTemplate = Template(filename='qbo_questions/templates/qbo_questions.js')
-        self.client_speak = rospy.ServiceProxy("/qbo_talk/festival_say", Text2Speach)
+        self.client_speak = rospy.ServiceProxy("/neo_talk/say", Text2Speach)
 
 
     @cherrypy.expose
