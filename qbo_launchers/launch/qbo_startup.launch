@@ -1,12 +1,24 @@
 <launch>
-    <param name="/system_lang" value="en"/>
+    <param name="/system_lang" value="cn"/>
 
     <master auto="start" />
-    <include file="$(find qbo_arduqbo)/launch/qbo_dynamixel_with_sensors.launch" /> 
-    <include file="$(find qbo_camera)/launch/qbo_stereo_node.launch" />
-    <include file="$(find qbo_listen)/launch/voice_recognizer.launch" />
-    <node pkg="qbo_talk" name="qbo_talk" type="festival_node.py" output="screen"/>
-    <include file="$(find qbo_webi)/launch/qbo_webi.launch" />
-<!--    <node pkg="qbo_brain"  name="qbo_brain"      type="qbo_brain.py" output="screen" /> -->
+<!--    <include file="$(find qbo_arduqbo)/launch/qbo_dynamixel_with_sensors.launch" /> -->
+    <include file="$(find qbo_laser_slam)/launch/mapping.launch" /> 
+    <node pkg="qbo_smart_home_services" name="qbo_smart_home_services" type="smart_home_services.py" output="screen"/>
+    <node pkg="qbo_chat_robot" name="qbo_chat_robot" type="chat_robot.py" output="screen"/>
 
+<!--    <include file="$(find qbo_camera-master)/launch/qbo_stereo_node.launch" />  -->
+        <include file="$(find qbo_camera-master)/launch/qbo_uvccamera_node.launch" />   
+<!--    <include file="$(find uvc_camera)/launch/camera_node.launch" /> -->  
+<!--    <include file="$(find qbo_webi)/launch/qbo_webi.launch" />   -->
+    <include file="$(find qbo_webi)/launch/qbo_face_recognition_training.launch" />   
+<!--    <include file="$(find qbo_webi)/launch/qbo_object_recognition_training.launch" /> -->
+    <include file="$(find neo_questions)/launch/neo_questions.launch" />
+<!--    <node pkg="neo_talk" name="neo_talk" type="neo_talk.py" output="screen"/> -->
+    <node pkg="qbo_talk" name="qbo_talk" type="festival_node.py" output="screen"/>
+    <node pkg="qbo_system_info" name="qbo_system_info" type="plugin_system.py" output="screen"/>
+    <node pkg="qbo_internet_services" name="qbo_internet_services" type="internet_services.py" output="screen"/>
+    <node pkg="rbx1_speech" name="voice_nav" type="voice_nav.py" output="screen"/> 
+<!--    <node pkg="qbo_wander" name="qbo_wander" type="wander.py" output="screen" />  -->
+<!--    <node pkg="neo_brain"  name="neo_brain"      type="neo_brain.py" output="screen" /> -->
 </launch>
