@@ -34,7 +34,8 @@
 #include <set>
 #include <qbo_arduqbo/BaseStop.h>
 #include <sensor_msgs/PointCloud.h>
-//#include <sensor_msgs/PointCloud2.h>
+#include <sensor_msgs/PointCloud2.h>
+#include <tf/transform_broadcaster.h>
 //#include <pcl/io/pcd_io.h>
 //#include <pcl/point_types.h>
 //#include <pcl/ros/conversions.h>
@@ -58,9 +59,10 @@ class CDistanceSensor
 	ros::Publisher sensor_pub_;
         ros::ServiceClient base_stop_service_client_;
         //pcl::PointCloud<pcl::PointXYZ> cloud_;
-        //sensor_msgs::PointCloud2 msg_;
+        sensor_msgs::PointCloud2 msg_;
         sensor_msgs::PointCloud cloud_;
-        double min_alert_distance_;
+        tf::TransformBroadcaster cloud_broadcaster_;
+	double min_alert_distance_;
         double max_alert_distance_;
         bool alert_;
 };
