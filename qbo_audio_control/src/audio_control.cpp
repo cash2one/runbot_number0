@@ -51,7 +51,7 @@ int mic_on=-1;
 
 
 double threshold_to_on=0.001; 
-double threshold_to_off=0.01;
+double threshold_to_off=0.05;
 int max_accum=5;
 int mic_volume=58;
 int front_volume=100;
@@ -132,11 +132,13 @@ static void stream_read_callback(pa_stream *s, size_t l, void *) {
     	secs=time(NULL);
 	mic_on=0;
 	system("amixer set Capture nocap");// > /dev/null");
+//	system("amixer -c 1 set Mic nocap");// > /dev/null");
     }
     else if (accum<=threshold_to_on && mic_on!=1)
     {
 	mic_on=1;
-	system("amixer set Capture cap");// > /dev/null");
+        system("amixer set Capture cap");
+//	system("amixer -c 1 set Mic cap");// > /dev/null");
     }
    pa_stream_drop(s);
 
@@ -278,6 +280,7 @@ static void context_state_callback(pa_context *c, void *) {
 
 void read_parameters(){
     ros::NodeHandle nh("~");
+/*
     nh.getParam("threshold_to_on",threshold_to_on);
     nh.getParam("threshold_to_off",threshold_to_off);
     nh.getParam("max_accum",max_accum);
@@ -287,7 +290,6 @@ void read_parameters(){
     nh.getParam("front_volume",front_volume);
     nh.getParam("master_front_volume",master_front_volume);
     nh.getParam("speaker",speaker);
-
     ROS_INFO("Threshold_to_on:%f",threshold_to_on);
     ROS_INFO("Threshold_to_off:%f",threshold_to_off);
     ROS_INFO("Max_accum:%d",max_accum);
@@ -297,7 +299,7 @@ void read_parameters(){
     ROS_INFO("Front_volume:%d%%", front_volume);
     ROS_INFO("Master_front_volume:%d%%", master_front_volume);
     ROS_INFO("Speaker volume %d%%",speaker);
-
+    
     std::string instruction;
     instruction="amixer set 'Input Source' ";
     instruction=instruction+" '"+default_input+"'";
@@ -323,12 +325,11 @@ void read_parameters(){
     volume_string << master_front_volume;
     instruction="amixer set 'Master' "+volume_string.str()+"%" + volume_string.str()+"%";
     system(instruction.c_str());
-
     volume_string.str("");
     volume_string << speaker;
-    instruction="amixer set 'Speaker' "+volume_string.str()+"%" + volume_string.str()+"%";
+    instruction="amixer set 'Beep' "+volume_string.str()+"%" + volume_string.str()+"%";
     system(instruction.c_str());
-
+*/
 }
 
 void read_parameters_callback(const ros::TimerEvent&){

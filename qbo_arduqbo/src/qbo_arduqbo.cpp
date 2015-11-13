@@ -107,6 +107,7 @@ CSerialController::CSerialController(std::string port1, int baud1, std::string p
     if(nh_.hasParam("dynamixelservo"))
     {
       //Start dynamixel port
+      ROS_ERROR( "dxmPort is %s!\n", dmxPort_.c_str());
       if( dxl_initialize(const_cast<char *>(dmxPort_.c_str()), 1) == 0 )
       {
           ROS_ERROR( "Failed to open dynamixel controller!\n" );
@@ -128,8 +129,10 @@ CSerialController::CSerialController(std::string port1, int baud1, std::string p
             //Set servos parameters
             ((DynamixelServo*)servosList_[(*it).first])->changeTorque(254);
             servosList_[(*it).first]->setParams((*it).second);
-            servosList_[(*it).first]->setAngle(0,0.3);
-            ROS_INFO_STREAM("Dynamixel " << (*it).first << " started");
+            float angle_origin= servosList_[(*it).first]->getAngle();
+            servosList_[(*it).first]->setAngle(0,0);
+//            ROS_INFO_STREAM("Dynamixel " << (*it).first << " started");
+            ROS_INFO_STREAM("Dynamixel Servo " << (*it).first << " started" << "angle:" << angle_origin);
           }
       }
     }
