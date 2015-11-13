@@ -105,7 +105,8 @@ void CBaseController::timerCallback(const ros::TimerEvent& e)
         return;
     }
     else
-	ROS_DEBUG_STREAM("Odometry messege from base controler board: " << x << "," << y << "," << th);
+    ROS_DEBUG_STREAM("Odometry messege from base controler board: " << x << "," << y << "," << th);
+    //ROS_ERROR("Odometry messege from base controler board:x=%f,y=%f,th=%f ", x, y, th);
     float d=sqrt(pow((x-x_),2) + pow((y-y_),2));
     float dx = d / elapsed;
     float angDiff=(th_-th)/elapsed;

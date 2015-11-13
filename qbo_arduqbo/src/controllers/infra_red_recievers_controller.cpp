@@ -47,6 +47,7 @@ void CInfraRedsController::timerCallback(const ros::TimerEvent& e)
         ROS_ERROR("Unable to get irs values from the base control board");
     else
     {
+        ROS_ERROR("Obtained irs values (0x%x,0x%x,0x%x) from the base control board ",(int)ir0_, (int)ir1_, (int)ir2_);
         ROS_DEBUG_STREAM("Obtained irs values (" << (int)ir0_ << "," << (int)ir1_ << "," << (int)ir2_ << ") from the base control board ");
         qbo_arduqbo::Irs msg;
         msg.ir0=ir0_;

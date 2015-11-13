@@ -71,6 +71,7 @@ void CJointController::timerCallback(const ros::TimerEvent& e)
                     else
                       (*servos_p_)[joint_msg_.name[i]]->setAngle( joint_msg_.position[i] );
                 }
+                ROS_ERROR("position:%f,velocity:%f", joint_msg_.position[i], joint_msg_.velocity[i]);
             }
             joints_dirty_=false;
         }
