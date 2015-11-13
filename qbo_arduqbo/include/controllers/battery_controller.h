@@ -30,7 +30,7 @@
 #include "ros/ros.h"
 #include <ros/console.h>
 #include "qbo_arduqbo/BatteryLevel.h"
-
+#include <qbo_arduqbo/BatteryQuery.h>
 class CBatteryController : public CController
 {
     public:
@@ -38,9 +38,12 @@ class CBatteryController : public CController
         
     protected:
 	ros::Publisher battery_pub_;
+        ros::ServiceServer battery_query_service_;
         float level_;
         uint8_t stat_;
         void timerCallback(const ros::TimerEvent& e);
+        bool queryBatteryService(qbo_arduqbo::BatteryQuery::Request &req, qbo_arduqbo::BatteryQuery::Response &res);
+
 };
 
 #endif

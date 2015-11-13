@@ -32,25 +32,65 @@ CBatteryController::CBatteryController(std::string name, CQboduinoDriver *device
     level_=0;
     stat_=0;
     std::string topic;
+    ROS_ERROR("CBatteryController entered");
     nh.param("controllers/"+name+"/topic", topic, std::string("battery_state"));
     nh.param("controllers/"+name+"/rate", rate_, 15.0);
     battery_pub_ = nh.advertise<qbo_arduqbo::BatteryLevel>(topic, 1);
+    battery_query_service_ = nh.advertiseService("query_battery", &CBatteryController::queryBatteryService,this);
+    ROS_ERROR("advertise query_battery Service start!!!!!!!!!!!!!!!!");
     timer_=nh.createTimer(ros::Duration(1/rate_),&CBatteryController::timerCallback,this);
 }
+bool CBatteryController::queryBatteryService(qbo_arduqbo::BatteryQuery::Request &req, qbo_arduqbo::BatteryQuery::Response &res)
+{
+ 
+  ROS_ERROR("queryBatteryService start!!!!!!!!!!!!!!!!");
+  int code=device_p_->getBattery(level_,stat_);
+  if (code<0)
+        ROS_ERROR("Unable to get battery level from the base control board");
+  else
+  {
+        ROS_ERROR("level=%f,stat=%d", level_, stat_);
+        ROS_DEBUG_STREAM("Obtained battery level " << level_ << " and stat " << stat_ << " from the base control board ");
+        qbo_arduqbo::BatteryLevel msg;
+        res.value = level_/10.0;
+        return true;
+  }
+  return false;
+}
+/*float CBatteryController::queryBatteryService(qbo_arduqbo::BatteryQuery::Request &req, qbo_arduqbo::BatteryQuery::Response &res)
+{
+ 
+  ROS_ERROR("queryBatteryService start!!!!!!!!!!!!!!!!");
+  int code=device_p_->getBattery(level_,stat_);
+  if (code<0)
+        ROS_ERROR("Unable to get battery level from the base control board");
+  else
+  {
+        ROS_ERROR("level=%f,stat=%d", level_, stat_);
+        ROS_DEBUG_STREAM("Obtained battery level " << level_ << " and stat " << stat_ << " from the base control board ");
+        qbo_arduqbo::BatteryLevel msg;
+        res.value = level_/10.0;
+        return res.value;
+  }
+  return -1.0;
+}*/
 
 void CBatteryController::timerCallback(const ros::TimerEvent& e)
 {
     int code=device_p_->getBattery(level_,stat_);
+    //ROS_ERROR("CBatteryController timerCallback");
     if (code<0)
         ROS_ERROR("Unable to get battery level from the base control board");
     else
     {
-        ROS_DEBUG_STREAM("Obtained battery level " << level_ << " and stat " << stat_ << " from the base control board ");
+        ROS_ERROR("timer callback level=%f,stat=%d", level_, stat_);
+        ROS_DEBUG_STREAM("timer callback Obtained battery level " << level_ << " and stat " << stat_ << " from the base control board ");
         qbo_arduqbo::BatteryLevel msg;
         msg.level=level_/10.0;
         msg.stat=stat_;
         msg.header.stamp = ros::Time::now();
         //publish
+      //  print msg.level
         battery_pub_.publish(msg);
     }
 }
