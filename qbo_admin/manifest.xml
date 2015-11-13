@@ -1,0 +1,17 @@
+<package>
+  <description brief="qbo_admin">
+
+     qbo_admin
+
+  </description>
+  <author>runji</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/qbo_admin</url>
+  <depend package="rospy"/>
+  <depend package="neo_talk"/>
+  <depend package="qbo_arduqbo"/>
+
+</package>
+
+

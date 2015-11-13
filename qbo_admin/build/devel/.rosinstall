@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /opt/ros/groovy/stacks/ros_workspace/src/OpenQbo/qbo_admin/build/devel/setup.sh
