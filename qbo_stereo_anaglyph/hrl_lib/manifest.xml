@@ -11,7 +11,7 @@
     <depend package="visualization_msgs"/>
     <depend package="tf"/>
     <depend package="dynamic_reconfigure"/>
-    <depend package="kdl"/>
+<!--    <depend package="kdl"/> -->
     
     <depend package="hrl_msgs"/>
     <depend package="hrl_srvs"/>
