@@ -1,0 +1,17 @@
+##################################################################################
+#
+#  Permit use of mbrola good voices, better than festival, and some languages not
+#  supported by it (French for example !)
+#
+#  for the nexgen Open-Source robot "QBO" from The CORPORA society.
+#     (Big thanks for their wonderful and no-limit product !!!)
+#
+#  Vincent FOUCAULT, elpimous12@orange.fr
+#
+##################################################################################
+
+Open a terminal :
+
+sudo apt-get install gstreamer0.10-pocketsphinx
+
+Enjoy

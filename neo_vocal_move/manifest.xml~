@@ -1,0 +1,30 @@
+<package>
+  <description brief="qbo_vocal_move, for QBO robot, from The Corpora">
+     neo_vocal_move, THANKS TO PIROBOT FOR INITIAL PROGRAM
+     Move QBO robot only with voice, with simple orders !
+
+	FRONT
+	BACK	
+	LEFT
+	RIGHT
+	SLOW SPEED
+	FULL SPEED
+	HALT
+	STOP
+
+  </description>
+  <author>Michael Ferguson</author>
+  <author>Vincent FOUCAULT, elpimous12@orange.fr</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/qbo_vocal_move</url>
+  <depend package="rospy"/>
+  <depend package="std_msgs"/>
+  <depend package="std_srvs"/>
+  <depend package="geometry_msgs"/>
+  <rosdep name="gstreamer0.10-pocketsphinx"/>
+  <depend package="qbo_talk"/>
+
+</package>
+
+

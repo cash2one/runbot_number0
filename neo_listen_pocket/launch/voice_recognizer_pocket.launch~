@@ -1,0 +1,14 @@
+<launch>
+
+  <!-- launch voice disabler-->
+    <include file="$(find qbo_audio_control)/launch/audio_control_listener.launch" /> 
+
+
+  <!-- launch questions -->
+  <!--<node name="recognizer" pkg="qbo_listen_pocket" type="recognizer.py">-->
+   <param name="lm" value="$(find qbo_listen_pocket)/config/questions/robocup.lm"/>-->
+   <param name="dict" value="$(find qbo_listen_pocket)/config/questions/robocup.dic"/>-->
+  </node>
+
+</launch>
+

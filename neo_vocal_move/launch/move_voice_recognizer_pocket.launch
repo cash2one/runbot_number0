@@ -1,0 +1,17 @@
+<launch>
+
+  <!-- launch voice disabler-->
+    <include file="$(find qbo_audio_control)/launch/audio_control_listener.launch" /> 
+
+
+  <!-- launch move recognition orders -->
+     <node name="recognizer" pkg="neo_listen_pocket" type="recognizer.py">
+        <param name="lm" value="$(find neo_listen_pocket)/config/move/move_cmd.lm"/>
+        <param name="dict" value="$(find neo_listen_pocket)/config/move/move_cmd.dic"/>
+     </node>
+
+     <node name="neo_vocal_move" pkg="neo_vocal_move" type="neo_vocal_move.py">
+     </node>
+
+</launch>
+

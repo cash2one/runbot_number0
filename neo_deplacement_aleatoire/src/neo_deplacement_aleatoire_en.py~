@@ -1,0 +1,207 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# Authors: Miguel Angel Julian <miguel.a.j@openqbo.com>
+#
+# modified by Vincent FOUCAULT <elpimous12@orange.fr>
+#
+# - random move, with wall-falling use
+# - back-falling
+# - blocked QBO
+# - use of ultrason SRF10 sensors (only both frontal for now !)
+# - use of IR GP2Y0A21YK sensor (floor_sensor)
+# - use of imu (QBOARD 4)
+# - use of odometry (for blocked QBO)
+#
+##################################################################################
+
+import roslib
+roslib.load_manifest('neo_deplacement_aleatoire')
+import os
+import rospy
+import threading
+from sensor_msgs.msg import PointCloud # srf10
+from sensor_msgs.msg import Imu # I don't know ! perhaps the imu ! Lol
+from nav_msgs.msg import Odometry # wheels motors infos
+from lib_qbo_pyarduqbo import qbo_control_client
+from time import sleep # used to create some pauses, and some specific pauses, needed to execute commands (one command takes 1 second to finish)
+from random import choice, uniform
+from math import atan, atan2 # used to create necessary angle for rotation
+
+# french speak / if you want to change to US or Spanish, really easy !
+# download espeak, mbrola, and mbrola wanted voices, replace fr1 with your one ! finished
+# a = volume, s = speed, p = pitch
+fr_speak = "espeak -a 70 -s 140 -p50 -v mb/mb-fr1 \"%s\" | mbrola -e -C \"n n2\" /usr/share/mbrola/voices/fr1 - -.au | paplay"
+
+angular_speed=0.15 # don't do more, or sensors won't be efficient
+lineal_speed=0.15 # same
+obstacles=False
+l_imu=""
+floor=""
+class neo_deplacement_aleatoire():
+    def __init__(self):
+        self.qbo_controller=qbo_control_client()
+        self.solMax=26 # perhaps you could change a bit, depending of your luminosity and/or ground material (see IR property)
+        self.solMin=20
+        self.angle=-1 # max. angle before stopping QBO, avoiding fall. (see Line 80)
+        self.no_floor=True
+        self.floorObstacle=True
+        self.too_imu_angle=True
+        self.blocked=True
+        self.sensors_distance=0.215 # lateral distance between srf10, used for rotation angle calcul
+        self.lineal_speed=0.0
+        self.angular_speed=0.0
+        self.turn_time=0.1
+        self.wall_distance_limit=0.5 # you can change, test !
+        self.last_turn_direction=False # mean turn now to Right
+        self.uniform_lineal_speed_change=0.06 # used to slighty modify speed (see Line 123)
+        self.sentences=['','','','','','','','','','','','','mais ya des murs partout? dans cette piaice','','','','','','','','','','','','','','','','mince','','','','','','','','','','','','','','','','sait la galère avec ces murs','','','','','','','','','','','','','','','','','','','y aurai pas un mur? la?','','','','','','','','','','','','','','','','','bon, encore un mur','','','','','','','','','','','','','','','','','','','j en ai marre de ces murs','','','','','','','','','','','','','bon? vincent? il est pourri ton programme']
+
+        self.sentences_chute=['Attention, je vais tomber','jai le vertige','rattrappe-moi','il faut que je recule', 'je vais tomber','vite','attention']
+
+        rospy.Subscriber('/distance_sensors_state/floor_sensor', PointCloud, self.capt_sol, queue_size=1)
+        rospy.Subscriber('/imu_state/data',Imu,self.ImuCallback, queue_size=1)
+	rospy.Subscriber('/odom', Odometry, self.odometry, queue_size=1)
+
+    def capt_sol(self,data): # floor_sensor
+        if (data.points[0].x >= self.solMax):
+            self.no_floor=True
+        else:
+            self.no_floor=False 
+
+        if (data.points[0].x <= self.solMin):
+            self.floorObstacle=True
+        else:
+            self.floorObstacle=False 
+   
+
+    def ImuCallback(self,data): # imu (x)
+        if data.linear_acceleration.x < self.angle:
+            self.too_imu_angle=True
+        else:
+            self.too_imu_angle=False        
+
+
+    def odometry(self,data): # blocking conditions.
+        if data.twist.twist.linear.x == 0.0: # if QBO isn't moving,
+            sleep(1)                            # wait 1 second
+            if data.twist.twist.linear.x == 0.0:   # test it QBO is always stopped ( if yes, QBO has problem !!!)
+                self.blocked=True # help ! Néo is blocked !!!
+        else:
+            self.blocked=False
+
+
+    def spin(self):
+        global obstacles
+        global l_imu
+        global floor
+        while(not rospy.is_shutdown()):
+           while self.too_imu_angle==False or self.no_floor==False: # while QBO can move securly, do it !
+              frontal_distances=self.qbo_controller.getFrontalDistances()
+              now=rospy.Time.now()
+              warning_left_flag=False
+              warning_right_flag=False
+              if frontal_distances[0][1] and (now-frontal_distances[0][1])<rospy.Duration(0.5):
+                  warning_left_flag=True
+              if frontal_distances[1][1] and (now-frontal_distances[1][1])<rospy.Duration(0.5):
+                  warning_right_flag=True
+
+              left_distance=999.9
+              right_distance=999.9
+
+              if warning_left_flag:
+                 left_distance=frontal_distances[0][0]
+              if warning_right_flag:
+                 right_distance=frontal_distances[1][0]
+              if not warning_left_flag or not warning_right_flag:
+                 if left_distance<right_distance: # if, at long distance, Left srf10 sees an obstacle,
+                    if self.lineal_speed != 0:
+                       self.last_turn_direction=False
+                       self.lineal_speed=0.20+uniform(-self.uniform_lineal_speed_change,self.uniform_lineal_speed_change)
+                       self.angular_speed=-angular_speed+uniform(-self.uniform_lineal_speed_change,self.uniform_lineal_speed_change)
+                       self.last_turn_direction=False
+                 elif left_distance>right_distance: # if, at long distance, Right srf10 sees an obstacle,
+                    if self.lineal_speed != 0:
+                       self.last_turn_direction=True
+                       self.lineal_speed=0.20+uniform(-self.uniform_lineal_speed_change,self.uniform_lineal_speed_change)
+                       self.angular_speed=angular_speed+uniform(-self.uniform_lineal_speed_change,self.uniform_lineal_speed_change)
+                       self.last_turn_direction=True
+                 else: # no obstacles
+                    self.lineal_speed=0.25+uniform(-self.uniform_lineal_speed_change,self.uniform_lineal_speed_change)
+                    self.angular_speed=0.0+uniform(-self.uniform_lineal_speed_change,self.uniform_lineal_speed_change)
+                    obstacles=False
+
+              else: # rotation angle calculation, from long distance
+                 angle=atan2((left_distance-right_distance),self.sensors_distance)
+                 self.lineal_speed=lineal_speed+uniform(-self.uniform_lineal_speed_change,self.uniform_lineal_speed_change)
+                 min_distance=min(left_distance,right_distance)
+                 time_limit=min_distance/self.lineal_speed
+
+                 if min_distance<=0 or time_limit==0:
+                    self.qbo_controller.setLinearAngular((self.lineal_speed+uniform(-0.03,0.03)),self.angular_speed+uniform(-0.1,0.1))
+
+                 else:
+                    self.angular_speed=angle/time_limit
+
+              # if both front sensors see a near wall (distance in Line 56)
+              if (left_distance<self.wall_distance_limit) and (right_distance<self.wall_distance_limit) or self.floorObstacle==True or self.blocked==True:
+                 os.system(fr_speak % choice(self.sentences))
+                 self.lineal_speed=-0.2
+                 sleep(0.1)
+
+                 if self.last_turn_direction: # if the last known rotation is Left,
+                    self.angular_speed=0.3
+
+                 else: # if the last known rotation is Right,
+                    self.angular_speed=-0.3
+
+                 if not obstacles: # modify state
+                    obstacles=True
+                    self.turn_time=0.15+uniform(-0.1,0.1)
+
+              else: # QBO can continue to move securly
+                 obstacles=False
+                 self.turn_time=0.15
+              self.qbo_controller.setLinearAngular(self.lineal_speed,self.angular_speed)
+
+           # if there is danger with floor falling or back falling,
+           r=0
+           self.turn_time=1
+                 os.system(fr_speak % choice(self.sentences_chute))
+           while r < 4: # go backward for 4 seconds, at a slighty random speed, continously (Sleep 1 sec. to permit order to finish before next !)
+              self.qbo_controller.setLinearAngular((-0.2+uniform(-0.03,0.03)),0.0) 
+              sleep(self.turn_time)
+              r+=1
+              continue
+
+              # go on last memorized direction for 3 seconds, at a slighty random speed, continously (Sleep 1 sec. to permit order to finish before next !)
+              if self.last_turn_direction: # (Left)
+                 R=0
+                 while R < 3: 
+                    self.qbo_controller.setLinearAngular(0.0,(0.6+uniform(-0.2,0.2))) 
+                    sleep(self.turn_time)
+                    R+=1
+                    continue
+
+              else: # (Right)
+                 R=0
+                 while R < 3:
+                    self.qbo_controller.setLinearAngular(0.0,(-0.6+uniform(-0.2,0.2))) 
+                    sleep(self.turn_time)
+                    R+=1
+                    continue
+
+           self.qbo_controller.setLinearAngular(self.lineal_speed,self.angular_speed) # gives general seed movments to QBO
+           sleep(0.15)
+
+
+if __name__ == "__main__":
+    #try:
+        rospy.init_node('neo_deplacement_aleatoire')
+        random_controller=neo_deplacement_aleatoire()
+        random_controller.spin()
+
+
+
+
+

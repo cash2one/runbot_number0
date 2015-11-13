@@ -1,0 +1,57 @@
+Language model created by QuickLM on Thu Aug 28 12:53:35 EDT 2014
+Copyright (c) 1996-2010 Carnegie Mellon University and Alexander I. Rudnicky
+
+The model is in standard ARPA format, designed by Doug Paul while he was at MITRE.
+
+The code that was used to produce this language model is available in Open Source.
+Please visit http://www.speech.cs.cmu.edu/tools/ for more information
+
+The (fixed) discount mass is 0.5. The backoffs are computed using the ratio method.
+This model based on a corpus of 8 sentences and 10 words
+
+\data\
+ngram 1=10
+ngram 2=16
+ngram 3=8
+
+\1-grams:
+-0.7782 </s> -0.3010
+-0.7782 <s> -0.2218
+-1.6812 ARE+YOU+HAPPY -0.2218
+-1.6812 ARE+YOU+INTELLIGENT -0.2218
+-1.6812 DO+YOU+LOVE -0.2218
+-1.6812 STOP+CHAT+MODE -0.2218
+-1.6812 WHAT+ARE+YOU -0.2218
+-1.6812 WHAT+IS+YOUR+NAME -0.2218
+-1.6812 WHERE+DO+YOU+LIVE -0.2218
+-1.6812 WHO+ARE+YOU -0.2218
+
+\2-grams:
+-1.2041 <s> ARE+YOU+HAPPY 0.0000
+-1.2041 <s> ARE+YOU+INTELLIGENT 0.0000
+-1.2041 <s> DO+YOU+LOVE 0.0000
+-1.2041 <s> STOP+CHAT+MODE 0.0000
+-1.2041 <s> WHAT+ARE+YOU 0.0000
+-1.2041 <s> WHAT+IS+YOUR+NAME 0.0000
+-1.2041 <s> WHERE+DO+YOU+LIVE 0.0000
+-1.2041 <s> WHO+ARE+YOU 0.0000
+-0.3010 ARE+YOU+HAPPY </s> -0.3010
+-0.3010 ARE+YOU+INTELLIGENT </s> -0.3010
+-0.3010 DO+YOU+LOVE </s> -0.3010
+-0.3010 STOP+CHAT+MODE </s> -0.3010
+-0.3010 WHAT+ARE+YOU </s> -0.3010
+-0.3010 WHAT+IS+YOUR+NAME </s> -0.3010
+-0.3010 WHERE+DO+YOU+LIVE </s> -0.3010
+-0.3010 WHO+ARE+YOU </s> -0.3010
+
+\3-grams:
+-0.3010 <s> ARE+YOU+HAPPY </s>
+-0.3010 <s> ARE+YOU+INTELLIGENT </s>
+-0.3010 <s> DO+YOU+LOVE </s>
+-0.3010 <s> STOP+CHAT+MODE </s>
+-0.3010 <s> WHAT+ARE+YOU </s>
+-0.3010 <s> WHAT+IS+YOUR+NAME </s>
+-0.3010 <s> WHERE+DO+YOU+LIVE </s>
+-0.3010 <s> WHO+ARE+YOU </s>
+
+\end\

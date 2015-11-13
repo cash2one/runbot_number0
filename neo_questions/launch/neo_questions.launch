@@ -1,0 +1,10 @@
+<launch> 
+ <include file="$(find qbo_audio_control)/launch/audio_control_listener.launch" />
+ <node name="recognizer" pkg="pocketsphinx" type="recognizer.py" output="screen">
+   <param name="lm" value="$(find neo_listen_pocket)/config/robot/robot.lm.DMP"/> 
+   <param name="dict" value="$(find neo_listen_pocket)/config/robot/robot.dic"/>
+ </node>
+
+  <node name="neo_questions" pkg="neo_questions" type="questions.py" output="screen" /> 
+  <node name="neo_talk" pkg="neo_talk" type="neo_talk.py" output="screen" />
+</launch>

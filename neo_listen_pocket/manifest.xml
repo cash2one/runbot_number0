@@ -1,0 +1,19 @@
+<package>
+  <description brief="Use of pocketsphinx, modified for QBO robot, from The Corpora.">
+    A simple wrapper around the pocket sphinx speech recognizer, using gstreamer. 
+    modified for QBO, the open source robot from THE CORPORA 
+    (Vincent FOUCAULT, elpimous12@orange.fr)
+  </description>
+  <author>Michael Ferguson</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/pocketsphinx</url>
+  <depend package="rospy"/>
+  <depend package="roscpp"/>
+  <depend package="std_msgs"/>
+  <depend package="std_srvs"/>
+  <depend package="geometry_msgs"/>
+  <rosdep name="gstreamer0.10-pocketsphinx"/>
+  <depend package="python-gst"/>
+  <depend package="neo_talk"/>
+</package>

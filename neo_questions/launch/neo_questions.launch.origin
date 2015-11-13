@@ -1,0 +1,16 @@
+<launch>
+
+  <!-- launch voice disabler-->
+<!--    <include file="$(find qbo_audio_control)/launch/audio_control_listener.launch" /> -->
+
+  <!-- launch questions recognition orders -->
+     <node name="recognizer" pkg="neo_listen_pocket" type="recognizer.py">
+        <param name="lm" value="$(find neo_listen_pocket)/config/questions/9385.lm"/>
+        <param name="dict" value="$(find neo_listen_pocket)/config/questions/9385.dic"/>
+     </node>
+
+
+    <node name="neo_questions" pkg="neo_questions" type="questions.py" output="screen" />
+
+</launch>
+

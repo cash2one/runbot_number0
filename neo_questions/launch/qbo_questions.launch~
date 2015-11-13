@@ -1,0 +1,16 @@
+<launch>
+
+  <!-- launch voice disabler-->
+    <include file="$(find qbo_audio_control)/launch/audio_control_listener.launch" /> 
+
+  <!-- launch questions recognition orders -->
+     <node name="recognizer" pkg="qbo_listen_pocket" type="recognizer.py">
+        <param name="lm" value="$(find qbo_listen_pocket)/config/questions/questions.lm"/>
+        <param name="dict" value="$(find qbo_listen_pocket)/config/questions/questions.dic"/>
+     </node>
+
+
+    <node name="qbo_questions" pkg="qbo_questions" type="questions_pocket.py" output="screen" />
+
+</launch>
+

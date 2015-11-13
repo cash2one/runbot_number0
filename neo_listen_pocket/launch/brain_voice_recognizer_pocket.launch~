@@ -1,0 +1,13 @@
+<launch>
+
+  <!-- launch voice disabler-->
+    <include file="$(find qbo_audio_control)/launch/audio_control_listener.launch" /> 
+
+
+  <!-- launch brain recognition orders -->
+     <node name="recognizer" pkg="qbo_listen_pocket" type="recognizer.py">
+        <param name="lm" value="$(find qbo_listen_pocket)/config/brain/brain.lm"/>
+        <param name="dict" value="$(find qbo_listen_pocket)/config/brain/brain.dic"/>
+     </node>
+</launch>
+

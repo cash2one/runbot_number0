@@ -1,0 +1,11 @@
+<package>
+  <description brief="neo_deplacement_aleatoire">
+     neo_deplacement_aleatoire
+  </description>
+  <author>Vincent FOUCAULT</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/neo_deplacement_aleatoire</url>
+  <depend package="rospy"/>
+  <depend package="qbo_arduqbo"/>
+</package>

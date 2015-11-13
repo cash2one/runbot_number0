@@ -1,0 +1,303 @@
+#!/usr/bin/env python
+#-*- coding: utf-8 -*-
+#Copyright (C) 2012-2013 Thecorpora Inc.
+#
+#This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+#
+#This program is distributed in the hope that it will be useful,but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+#You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+#
+#  Modified by Vincent FOUCAULT elpimous12@orange.fr
+#
+#  for pocketsphinx use, in replacement of julius (julius issues on ubuntu > electric version)
+#
+######################################################################################
+
+import roslib; roslib.load_manifest('neo_questions')
+import rospy
+from neo_talk.srv import *
+
+from qbo_face_msgs.msg import FacePosAndDist
+from std_msgs.msg import String
+from qbo_smart_home_services.srv import *
+from qbo_chat_robot.srv import *
+import random
+import sys
+import os
+import jieba
+#Load plugins directory
+path = roslib.packages.get_pkg_dir("neo_questions")
+sys.path.append(path+"/src/plugins")
+
+global client_speak
+global face_detected
+global dialogue
+global subscribe
+global plugins
+global lang
+
+def system_language(data):
+    try:
+        set_language(data.data)
+        rospy.loginfo("Language changed to "+data.data)
+    except KeyError:
+        rospy.loginfo("Error: Language not recognized("+data.data+")")
+
+
+def speak_this(text):
+    global client_speak
+    client_speak(str(text))
+def smarthomefenci(sentence,language):
+    global location_list
+    global device_list
+    global action_list
+    global param_location
+    global param_device
+    global param_action
+    seg_list=[]
+    print sentence.replace(" ","")
+    seg_list1=jieba.cut(sentence.replace(" ",""))
+    for seg in seg_list1:
+        seg_list.append(seg)
+        print seg
+    for location in location_list:
+        print "location list:%s"%location
+	if location in seg_list:
+           param_location = location
+           print "location:%s matched!"%param_location
+	   for device in device_list:
+	        print "device list:%s"%device
+		if device in seg_list:
+                   param_device = device
+    		   print "device:%s matched!"%param_device
+		   for action in action_list:
+		       print "action list:%s"%action
+                       if action in seg_list:
+           	          param_action = action
+                          print "action:%s matched!"%param_action
+                          return True
+                       else:
+                          print "action:%s not matched!"%action
+#                         return False
+                else:
+                    print "device:%s not matched!"%device
+#                    return False
+        else:
+             print "location:%s not matched!"%location
+#            return False
+
+#    if (param_location != "") and (param_device != "") and (param_action != ""):
+#       print "param OK"
+#       return True
+#    else: 
+    return False
+
+def chat_robot(sentence,language):
+    rospy.wait_for_service("qbo_chat_robot")
+    client_chat = rospy.ServiceProxy("qbo_chat_robot", ChatRobot)
+    response  = client_chat(sentence)
+    text = response.answer
+    print text
+    speak_this(text)
+def smarthomectrl(sentence,language):
+    global location_list
+    global device_list
+    global action_list
+    global param_location
+    global param_device
+    global param_action
+    if (smarthomefenci(sentence,language) != True):
+        print "smarthome command not recognized!"
+        return False 
+    print "smarthome command recognized ok!"
+    rospy.wait_for_service("/smart_home_set_host")
+    client_sethost = rospy.ServiceProxy("/smart_home_set_host", SetHost)
+    rospy.wait_for_service("/smart_home_single_ctrl")
+    client_singlectrl = rospy.ServiceProxy("/smart_home_single_ctrl", SingleCtrl)
+#    print "sentence:%s"%sentence
+#    print "language:%s"%language
+#    sentencelist=sentence.split(' ',2)
+#    print sentencelist[1]
+#    txtname=sentencelist[1]
+#    print "smarthome ip:%s"%(client_sethost("192.168.0.101"))
+#    client_singlectrl("客厅", "吊灯左", "开") 
+    if (client_singlectrl(param_location, param_device, param_action) == True):
+       print "smarthome ctrl success"
+       return True
+    else:
+       print "smarthome ctrl failed"
+       return False
+def listen_callback(msg):
+    global face_detected  
+    global dialogue
+    
+    text=""
+    sentence = msg.data
+    sentence=sentence.upper()
+    rospy.loginfo("Listened: |"+sentence+"|")
+   
+#    if not face_detected:
+#       rospy.loginfo("Ignoring last sentece because face was not detected")
+#       return
+#    sentencelist=sentence.split(' ',4)
+#    print sentencelist[3]
+    for i in range(12,1,-1):   
+    	sentencecut=sentence.decode('utf8')[0:i].encode('utf8')
+    	print "sentencecut:%s"%sentencecut
+    	if sentencecut in dialogue:
+            output = dialogue[sentencecut]
+            choice=random.choice(output)
+            if choice[0]=="$":
+                choice=choice.replace("$","")
+                choice=choice.lower()
+                for plug in plugins:
+                    try:
+                       text=getattr(plug,choice)(sentence,lang)
+                       print "text:%s"%(text)
+                       speak_this(text)
+	               return
+                    except AttributeError:
+                       rospy.loginfo("Attibute "+choice +" could not be found:"+ str(dir(plug)))
+            else:
+                text=choice
+                speak_this(text)
+                print text
+	        return #break
+        else:
+            continue
+    print "begin to smarthomectrl:%s"%sentence
+    if(smarthomectrl(sentence, lang) == True):
+        return 
+    #chat_robot(sentence, lang)
+
+def face_callback(data):
+    global face_detected
+    face_detected = data.face_detected	
+
+def read_smarthome_dic():
+    global location_list
+    global device_list
+    global action_list
+    location_list=[]
+    device_list=[]
+    action_list=[]
+    path = roslib.packages.get_pkg_dir("neo_questions")
+    with open(path+'/smarthomedata/location.dic') as fp:
+        print "location list:"
+        for line in fp:
+            location = line.rstrip('\n')
+            print location
+            print "next:"
+            location_list.append(location.decode('utf-8'))
+    with open(path+'/smarthomedata/device.dic') as fp:
+        print "device list:"
+        for line in fp:
+            device = line.rstrip('\n')
+            print device
+            print "next:"
+            device_list.append(device.decode('utf-8'))
+    with open(path+'/smarthomedata/action.dic') as fp:
+        print "action list:"
+        for line in fp:
+            action = line.rstrip('\n')
+            print action
+            print "next:"
+            action_list.append(action.decode('utf-8'))
+    
+def read_dialogues(filename):
+    global dialogue
+    dialogue = {}
+
+    f = open(filename)    
+    for line in f.readlines():
+        try:
+            line = line.replace("\n","") 
+            parts = line.split(">>>")
+
+            dialogue_input = parts[0].strip()
+            dialogue_output = parts[1].strip()
+        
+            # we check wheter the input line alreayd exists, if so, we add to its own list
+            if dialogue_input in dialogue:                
+                dialogue[dialogue_input].append(dialogue_output)
+            else:
+                #dialogue_input does not exist
+                dialogue[dialogue_input] = [dialogue_output]
+        except Exception:
+            pass        
+
+    f.close()
+
+def set_language(lang):
+
+    if lang!="es" and lang!="en":
+       lang="cn"
+
+    global subscribe
+    try:
+        subscribe.unregister()
+        rospy.loginfo("Unregistered from previous language")
+    except NameError:
+        rospy.loginfo("First language set")
+
+
+    path = roslib.packages.get_pkg_dir("neo_questions")
+    filename = path+'/config/dialogues_'+lang
+    print "Dialogue filename loaded: "+filename
+    read_dialogues(filename)
+    subscribe=rospy.Subscriber('recognizer/output', String, listen_callback)
+
+def loadPlugins():
+    global plugins
+    plugins=[]
+    path = roslib.packages.get_pkg_dir("neo_questions")
+    for f in os.listdir(path+"/src/plugins/"):
+        moduleName, ext = os.path.splitext(f) 
+        if ext == '.py' and moduleName!="__init__":
+            plugins.append(__import__(moduleName))
+
+
+def main():
+    global client_speak
+    global face_detected
+    global lang
+
+    #Init ROS
+    rospy.init_node('neo_questions')
+    lang = rospy.get_param("/system_lang", "cn")
+
+    #Init variable to know if somebody is in front of qbo
+    face_detected = False
+
+    #Load plugins
+    loadPlugins()
+    read_smarthome_dic()
+    set_language(lang)
+    print "Language loaded: "+lang
+#    print "Dialog => %s"%dialogue
+    for k in dialogue:
+	print "%s:"%k,
+        for element in dialogue[k]:
+		print "%s"%element
+        print ""
+#    print "%s:%s"%(k,dialogue[k])
+#    print "Dialog => "+str(dialogue)
+
+    rospy.loginfo("Starting questions node")
+ 
+# call "/say" service to speak selected words
+    client_speak = rospy.ServiceProxy("/say", Text2Speach)
+
+    #Set Julius
+    rospy.Subscriber("/system_lang", String, system_language)
+
+    #For face view
+    rospy.Subscriber("/qbo_face_tracking/face_pos_and_dist", FacePosAndDist, face_callback)
+
+    rospy.spin()
+
+
+if __name__ == '__main__':
+    main()
+

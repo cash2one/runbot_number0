@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /opt/ros/hydro/stacks/neo_deplacement_aleatoire/build/devel/setup.sh

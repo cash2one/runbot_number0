@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /opt/ros/hydro/stacks/neo_vocal_move/build/devel/setup.sh

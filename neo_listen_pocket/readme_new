@@ -1,0 +1,18 @@
+##################################################################################
+#
+#  Permit voice recognition, where Julius had problems on ubuntu > ver. 11
+#
+#  can use lot of language models (French for example ! soon)
+#
+#  for the nexgen Open-Source robot "QBO" from The CORPORA society.
+#     (Big thanks for their wonderful and no-limit product !!!)
+#
+#  Vincent FOUCAULT, elpimous12@orange.fr
+#
+##################################################################################
+
+Open a terminal :
+
+sudo apt-get install gstreamer0.10-pocketsphinx
+
+Enjoy

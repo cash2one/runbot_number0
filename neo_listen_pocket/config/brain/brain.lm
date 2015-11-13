@@ -1,0 +1,85 @@
+Language model created by QuickLM on Thu Aug 28 12:42:36 EDT 2014
+Copyright (c) 1996-2010 Carnegie Mellon University and Alexander I. Rudnicky
+
+The model is in standard ARPA format, designed by Doug Paul while he was at MITRE.
+
+The code that was used to produce this language model is available in Open Source.
+Please visit http://www.speech.cs.cmu.edu/tools/ for more information
+
+The (fixed) discount mass is 0.5. The backoffs are computed using the ratio method.
+This model based on a corpus of 15 sentences and 17 words
+
+\data\
+ngram 1=17
+ngram 2=30
+ngram 3=15
+
+\1-grams:
+-0.7782 </s> -0.3010
+-0.7782 <s> -0.2218
+-1.9542 FACE+RECOGNITION -0.2218
+-1.9542 FOLLOW+ME -0.2218
+-1.9542 HALT+MOVING -0.2218
+-1.9542 OBJECT+RECOGNITION -0.2218
+-1.9542 RANDOM+MOVE -0.2218
+-1.9542 RUN+CHAT+MODE -0.2218
+-1.9542 RUN+MUSIC -0.2218
+-1.9542 RUN+PHONE -0.2218
+-1.9542 RUN+WEB+INTERFACE -0.2218
+-1.9542 START+PHONE+SERVICES -0.2218
+-1.9542 STOP+CHAT+MODE -0.2218
+-1.9542 STOP+MUSIC -0.2218
+-1.9542 STOP+PHONE -0.2218
+-1.9542 STOP+STATE+MACHINE -0.2218
+-1.9542 STOP+WEB+INTERFACE -0.2218
+
+\2-grams:
+-1.4771 <s> FACE+RECOGNITION 0.0000
+-1.4771 <s> FOLLOW+ME 0.0000
+-1.4771 <s> HALT+MOVING 0.0000
+-1.4771 <s> OBJECT+RECOGNITION 0.0000
+-1.4771 <s> RANDOM+MOVE 0.0000
+-1.4771 <s> RUN+CHAT+MODE 0.0000
+-1.4771 <s> RUN+MUSIC 0.0000
+-1.4771 <s> RUN+PHONE 0.0000
+-1.4771 <s> RUN+WEB+INTERFACE 0.0000
+-1.4771 <s> START+PHONE+SERVICES 0.0000
+-1.4771 <s> STOP+CHAT+MODE 0.0000
+-1.4771 <s> STOP+MUSIC 0.0000
+-1.4771 <s> STOP+PHONE 0.0000
+-1.4771 <s> STOP+STATE+MACHINE 0.0000
+-1.4771 <s> STOP+WEB+INTERFACE 0.0000
+-0.3010 FACE+RECOGNITION </s> -0.3010
+-0.3010 FOLLOW+ME </s> -0.3010
+-0.3010 HALT+MOVING </s> -0.3010
+-0.3010 OBJECT+RECOGNITION </s> -0.3010
+-0.3010 RANDOM+MOVE </s> -0.3010
+-0.3010 RUN+CHAT+MODE </s> -0.3010
+-0.3010 RUN+MUSIC </s> -0.3010
+-0.3010 RUN+PHONE </s> -0.3010
+-0.3010 RUN+WEB+INTERFACE </s> -0.3010
+-0.3010 START+PHONE+SERVICES </s> -0.3010
+-0.3010 STOP+CHAT+MODE </s> -0.3010
+-0.3010 STOP+MUSIC </s> -0.3010
+-0.3010 STOP+PHONE </s> -0.3010
+-0.3010 STOP+STATE+MACHINE </s> -0.3010
+-0.3010 STOP+WEB+INTERFACE </s> -0.3010
+
+\3-grams:
+-0.3010 <s> FACE+RECOGNITION </s>
+-0.3010 <s> FOLLOW+ME </s>
+-0.3010 <s> HALT+MOVING </s>
+-0.3010 <s> OBJECT+RECOGNITION </s>
+-0.3010 <s> RANDOM+MOVE </s>
+-0.3010 <s> RUN+CHAT+MODE </s>
+-0.3010 <s> RUN+MUSIC </s>
+-0.3010 <s> RUN+PHONE </s>
+-0.3010 <s> RUN+WEB+INTERFACE </s>
+-0.3010 <s> START+PHONE+SERVICES </s>
+-0.3010 <s> STOP+CHAT+MODE </s>
+-0.3010 <s> STOP+MUSIC </s>
+-0.3010 <s> STOP+PHONE </s>
+-0.3010 <s> STOP+STATE+MACHINE </s>
+-0.3010 <s> STOP+WEB+INTERFACE </s>
+
+\end\
